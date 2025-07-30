@@ -1,0 +1,5 @@
+services: 
+  web: 
+    build:  LittleLemon
+    ports: 
+      - '8000:8000'

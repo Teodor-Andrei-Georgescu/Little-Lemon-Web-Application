@@ -1,0 +1,30 @@
+# syntax=docker/dockerfile:1.4
+
+FROM python:3.9-alpine AS builder
+
+
+RUN apk add --no-cache \
+      gcc \
+      musl-dev \
+      mariadb-connector-c-dev \
+      pkgconfig \
+      libffi-dev \
+      openssl-dev
+      
+# Set the working directory
+WORKDIR /LittleLemon
+
+# Copy the requirements file and install Python dependencies
+COPY Pipfile Pipfile.lock ./
+RUN pip install --no-cache-dir pipenv \
+ && pipenv install --deploy --system
+
+# Copy the application source code
+COPY . /LittleLemon
+
+# Expose the application port
+EXPOSE 8000
+
+# Entry point for the application
+ENTRYPOINT ["python3"]
+CMD ["manage.py", "runserver", "0.0.0.0:8000"]
